@@ -6,11 +6,9 @@
         public string Prefix { get; set; }
         public string StorageConnectionString { get; set; }
         public string Container { get; set; }
-
+        public string TargetAccessTier { get; set; }
         public int ThreadCount { get; set; }
         public bool WhatIf { get; set; }
-
-
     }
     
 }

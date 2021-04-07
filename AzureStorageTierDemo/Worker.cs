@@ -82,6 +82,9 @@ namespace AzureStorageTierDemo
 
                 _logger.LogInformation($"WhatIf = {_config.WhatIf}");
                 op.Telemetry.Properties.Add("WhatIf", _config.WhatIf.ToString());
+
+                _logger.LogInformation($"TargetAccessTier = {_config.TargetAccessTier}");
+                op.Telemetry.Properties.Add("TargetAccessTier", _config.TargetAccessTier);
             }
         }
 
@@ -237,14 +240,14 @@ namespace AzureStorageTierDemo
 
                         if (uris.Count > 250)
                         {
-                            await ProcessBatch(blobServiceClient, uris.ToArray(), AccessTier.Cool, stoppingToken);
+                            await ProcessBatch(blobServiceClient, uris.ToArray(), stoppingToken);
                             uris.Clear();
                         }
                     }
 
                     if (uris.Count > 0)
                     {
-                        await ProcessBatch(blobServiceClient, uris.ToArray(), AccessTier.Cool, stoppingToken);
+                        await ProcessBatch(blobServiceClient, uris.ToArray(), stoppingToken);
                         uris.Clear();
                     }
                 }
@@ -255,7 +258,7 @@ namespace AzureStorageTierDemo
 
         }
 
-        private async Task ProcessBatch(BlobServiceClient blobServiceClient, IEnumerable<Uri> uris, AccessTier accessTier, CancellationToken cancellationToken)
+        private async Task ProcessBatch(BlobServiceClient blobServiceClient, IEnumerable<Uri> uris, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Sending Batch of {uris.Count()} items");
 
@@ -267,7 +270,14 @@ namespace AzureStorageTierDemo
                 if (!_config.WhatIf)
                 {
                     BlobBatchClient batch = blobServiceClient.GetBlobBatchClient();
-                    await batch.SetBlobsAccessTierAsync(uris, accessTier, cancellationToken: cancellationToken);
+                    if (_config.TargetAccessTier.Equals("Hot", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        await batch.SetBlobsAccessTierAsync(uris, AccessTier.Hot, cancellationToken: cancellationToken);
+                    }
+                    else
+                    {
+                        await batch.SetBlobsAccessTierAsync(uris, AccessTier.Cool, cancellationToken: cancellationToken);
+                    }
                 }
             }
         }
