@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-AzureStorageTierDemo-C9DBF058-C7D5-42AD-BE6B-A0E3405C9E20</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.8.1" />
+    <PackageReference Include="Azure.Storage.Blobs.Batch" Version="12.5.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.17.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+  </ItemGroup>
+</Project>
