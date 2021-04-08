@@ -6,7 +6,7 @@ More info on the rehydration process can be found [here](https://docs.microsoft.
 
 The sample leverages:
 
-1. [Multi-threaded Architecture](https://docs.microsoft.com/dotnet/api/system.threading.semaphoreslim) to increase total throughput
+1. [Multi-threaded Architecture](https://docs.microsoft.com/dotnet/api/system.threading.semaphoreslim) to increase total throughput. Threads are spawned based on the naming convention in your storage account using an `/` as the delimiter, see [here](https://docs.microsoft.com/dotnet/api/azure.storage.blobs.blobcontainerclient.getblobsbyhierarchy) for more info.
 1. Use of the [Batch API](https://docs.microsoft.com/rest/api/storageservices/blob-batch) to reduce calls to Azure
 1. Deployment to an [Azure Container Instance](https://azure.microsoft.com/services/container-instances/) to reduce network latency vs running over the internet
 
@@ -72,6 +72,7 @@ az container create \
 
 ## Tips
 
+- Deploy the ACI instance to the SAME region your storage account is in. This will reduce network latency on the calls between the app and the storage account.
 - Running the application in `WhatIf` mode is a good way to get an idea of if the files have been read off of archive and put back in your tier of choice (hot/cool). However, it needs to scan each object in the container to do this. For larger containers this will take time and consume storage transactions.
 - You can rerun the above bash script with different values for your environmental variables to change them, without needing to delete and recreate the ACI instance.
 - You can run multiple instances of ACI (with different names) if you want to process multiple storage accounts/containers at the same time.
